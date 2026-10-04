@@ -14,6 +14,7 @@ from receiptsplit.api.auth import router as auth_router
 from receiptsplit.api.errors import AppError
 from receiptsplit.api.members import router as members_router
 from receiptsplit.api.receipts import router as receipts_router
+from receiptsplit.api.shares import router as shares_router
 from receiptsplit.config import Settings
 from receiptsplit.db.session import build_engine
 from receiptsplit.domain.clock import SystemClock
@@ -30,6 +31,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(auth_router)
     app.include_router(members_router)
     app.include_router(receipts_router)
+    app.include_router(shares_router)
 
     @app.middleware("http")
     async def request_context(

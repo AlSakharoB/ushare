@@ -331,6 +331,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/receipts/{receipt_id}/items/{item_id}/my-share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Put Share */
+        put: operations["put_share_api_v1_receipts__receipt_id__items__item_id__my_share_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receipts/{receipt_id}/take-remaining": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Take Remaining */
+        post: operations["take_remaining_api_v1_receipts__receipt_id__take_remaining_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receipts/{receipt_id}/confirm-selection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm Selection */
+        post: operations["confirm_selection_api_v1_receipts__receipt_id__confirm_selection_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health/live": {
         parameters: {
             query?: never;
@@ -684,12 +735,26 @@ export interface components {
             /** Next Cursor */
             next_cursor: string | null;
         };
+        /** RemainingCommand */
+        RemainingCommand: {
+            /** Expected Version */
+            expected_version: number;
+            /** Item Id */
+            item_id?: string | null;
+        };
         /** ReviewRequest */
         ReviewRequest: {
             /** Expected Version */
             expected_version: number;
             /** Approve */
             approve: boolean;
+        };
+        /** ShareCommand */
+        ShareCommand: {
+            /** Expected Version */
+            expected_version: number;
+            /** Share Bp */
+            share_bp: number;
         };
         /** TokenBody */
         TokenBody: {
@@ -1435,6 +1500,112 @@ export interface operations {
         };
     };
     open_for_selection_api_v1_receipts__receipt_id__open_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                receipt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Command"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    put_share_api_v1_receipts__receipt_id__items__item_id__my_share_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                receipt_id: string;
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShareCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    take_remaining_api_v1_receipts__receipt_id__take_remaining_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                receipt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RemainingCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    confirm_selection_api_v1_receipts__receipt_id__confirm_selection_post: {
         parameters: {
             query?: never;
             header?: never;
