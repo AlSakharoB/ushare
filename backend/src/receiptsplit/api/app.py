@@ -12,6 +12,7 @@ from starlette.responses import Response
 
 from receiptsplit.api.auth import router as auth_router
 from receiptsplit.api.errors import AppError
+from receiptsplit.api.members import router as members_router
 from receiptsplit.api.receipts import router as receipts_router
 from receiptsplit.config import Settings
 from receiptsplit.db.session import build_engine
@@ -27,6 +28,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.engine = build_engine(settings.database_url)
     app.state.clock = SystemClock()
     app.include_router(auth_router)
+    app.include_router(members_router)
     app.include_router(receipts_router)
 
     @app.middleware("http")
