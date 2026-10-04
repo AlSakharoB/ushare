@@ -1,0 +1,9 @@
+FROM python:3.12.13-slim
+COPY --from=ghcr.io/astral-sh/uv:0.10.9 /uv /usr/local/bin/uv
+RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
+WORKDIR /app/backend
+COPY backend/pyproject.toml backend/uv.lock ./
+RUN uv sync --frozen --extra ocr --no-dev --no-install-project
+COPY backend ./
+RUN uv sync --frozen --extra ocr --no-dev
+CMD ["uv", "run", "--no-sync", "uvicorn", "receiptsplit.ocr.server:app", "--host", "0.0.0.0", "--port", "9000", "--no-access-log"]

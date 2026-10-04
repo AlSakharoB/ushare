@@ -1,0 +1,1 @@
+"""ReceiptSplit shared application package."""

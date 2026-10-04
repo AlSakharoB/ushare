@@ -1,0 +1,14 @@
+.git
+ReceiptSplit_Codex_Instructions
+**/.venv
+**/node_modules
+**/__pycache__
+**/dist
+.env*
+storage
+artifacts
+weights
+**/.mypy_cache
+**/.ruff_cache
+**/.pytest_cache
+**/.hypothesis
