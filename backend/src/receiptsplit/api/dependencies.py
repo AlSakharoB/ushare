@@ -5,7 +5,7 @@ from fastapi import Depends, Request
 from sqlalchemy.orm import Session
 
 from receiptsplit.api.errors import AppError
-from receiptsplit.auth.service import digest
+from receiptsplit.auth.service import digest, rate_limit
 from receiptsplit.db.auth_models import User, UserSession
 
 
@@ -32,4 +32,7 @@ def actor(request: Request, session: Session = Depends(db_session)) -> User:
     user = session.get(User, auth_session.user_id)
     if user is None:
         raise AppError("authentication_required", "Войдите снова", 401)
+    if request.method not in {"GET", "HEAD", "OPTIONS"}:
+        with Session(request.app.state.engine) as rate_session, rate_session.begin():
+            rate_limit(rate_session, "mutation", str(user.id), request.app.state.clock.now(), 120)
     return user
