@@ -10,6 +10,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from starlette.responses import Response
 
+from receiptsplit.api.auth import router as auth_router
 from receiptsplit.api.errors import AppError
 from receiptsplit.config import Settings
 from receiptsplit.db.session import build_engine
@@ -24,6 +25,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     app.state.engine = build_engine(settings.database_url)
     app.state.clock = SystemClock()
+    app.include_router(auth_router)
 
     @app.middleware("http")
     async def request_context(

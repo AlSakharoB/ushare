@@ -1,6 +1,7 @@
 from alembic import context
 
 from receiptsplit.config import Settings
+from receiptsplit.db import auth_models  # noqa: F401
 from receiptsplit.db.session import Base, build_engine
 
 config = context.config
