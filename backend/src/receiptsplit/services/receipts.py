@@ -16,12 +16,15 @@ from receiptsplit.contracts import (
     CreateReceipt,
     ItemDTO,
     ItemInput,
+    LedgerDTO,
     MemberDTO,
     PatchReceipt,
+    PaymentReportDTO,
     ReceiptDTO,
 )
 from receiptsplit.db.auth_models import User
 from receiptsplit.db.receipt_models import AuditEvent, IdempotencyKey, Item, Member, Receipt, Share
+from receiptsplit.db.settlement_models import CashLedger, PaymentReport, Snapshot
 from receiptsplit.domain.money import Calculation, Discount, Line, MoneyError, Tips, calculate
 from receiptsplit.domain.states import ReceiptStatus, Revision, StateError, validate_transition
 
@@ -140,7 +143,7 @@ def receipt_dto(session: Session, receipt: Receipt, actor_id: UUID) -> ReceiptDT
     if not financial_visible:
         member_query = member_query.where(Member.user_id == actor_id)
     members = session.execute(member_query.order_by(Member.id)).all()
-    return ReceiptDTO(
+    dto = ReceiptDTO(
         id=receipt.id,
         title=receipt.title,
         currency=receipt.currency,
@@ -185,6 +188,41 @@ def receipt_dto(session: Session, receipt: Receipt, actor_id: UUID) -> ReceiptDT
         if financial_visible
         else None,
     )
+    if financial_visible:
+        snapshot = session.scalar(
+            select(Snapshot)
+            .where(Snapshot.receipt_id == receipt.id, Snapshot.superseded_at.is_(None))
+            .order_by(Snapshot.created_at.desc())
+        )
+        if snapshot is not None and receipt.status in {"settling", "closed"}:
+            dto.snapshot_id = snapshot.id
+            dto.calculation = CalculationDTO.model_validate(snapshot.data["calculation"])
+        ledger = session.scalars(
+            select(CashLedger)
+            .where(CashLedger.receipt_id == receipt.id)
+            .order_by(CashLedger.created_at, CashLedger.id)
+        ).all()
+        dto.ledger = [LedgerDTO.model_validate(entry) for entry in ledger]
+        dto.cash_balances = {
+            str(m.id): sum(
+                entry.direction * entry.amount_minor for entry in ledger if entry.member_id == m.id
+            )
+            for m, _ in members
+        }
+        if dto.calculation is not None:
+            dto.remaining = {
+                key: cost.due_minor - dto.cash_balances.get(key, 0)
+                for key, cost in dto.calculation.members.items()
+            }
+        dto.payment_reports = [
+            PaymentReportDTO.model_validate(payment)
+            for payment in session.scalars(
+                select(PaymentReport)
+                .where(PaymentReport.receipt_id == receipt.id)
+                .order_by(PaymentReport.created_at, PaymentReport.id)
+            )
+        ]
+    return dto
 
 
 def idempotent(

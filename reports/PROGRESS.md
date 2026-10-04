@@ -10,12 +10,14 @@
 | S03 | DONE | stages/S03_receipts.md | feat(receipts): add manual receipt workflow |
 | S04 | DONE | stages/S04_members.md | feat(members): add scoped invitations and approval |
 | S05 | DONE | stages/S05_shares.md | feat(shares): enforce concurrent share selection |
-| S06–S11 | NOT_STARTED | — | — |
+| S06 | DONE | stages/S06_settlement.md | feat(settlement): preserve cash and enforce creator close |
+| S07–S11 | NOT_STARTED | — | — |
 
 S00 commit: b26ad81.
 S01 commit: da1dfbe.
 S02 commit: 560176a.
 S03 commit: 7e50b1b.
 S04 commit: 1056304.
+S05 commit: 1b71f9a.
 
 Внешние gates: Telegram token/HTTPS и реальные клиенты для live smoke; разрешённые обезличенные реальные чеки для OCR benchmark. Они не мешают независимой локальной реализации.

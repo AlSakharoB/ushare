@@ -26,7 +26,7 @@ def test_empty_and_previous_database_migration(previous: str | None) -> None:
             if previous:
                 command.upgrade(config, previous)
             command.upgrade(config, "head")
-            assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0003"
+            assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0004"
             assert connection.scalar(text("SELECT to_regclass('item_shares')")) is not None
         finally:
             transaction.rollback()

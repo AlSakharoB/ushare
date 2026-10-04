@@ -15,6 +15,7 @@ from receiptsplit.contracts import Command, ReceiptDTO
 from receiptsplit.db.auth_models import User
 from receiptsplit.db.member_models import Invitation, JoinRequest
 from receiptsplit.db.receipt_models import Member, Share
+from receiptsplit.db.settlement_models import CashLedger, PaymentReport
 from receiptsplit.services.members import known_contacts, resolve_invitation
 from receiptsplit.services.receipts import changed, editable, get_receipt, receipt_dto
 
@@ -274,6 +275,17 @@ def remove_member(
     )
     if member is None:
         raise AppError("not_found", "Участник недоступен", 404)
+    if (
+        session.scalar(select(CashLedger.id).where(CashLedger.member_id == member_id).limit(1))
+        is not None
+        or session.scalar(
+            select(PaymentReport.id).where(PaymentReport.member_id == member_id).limit(1)
+        )
+        is not None
+    ):
+        raise AppError(
+            "member_has_money_history", "Участник с денежной историей остаётся до закрытия", 409
+        )
     if (
         member.user_id == receipt.owner_user_id
         or session.scalar(select(Share.item_id).where(Share.member_id == member_id).limit(1))

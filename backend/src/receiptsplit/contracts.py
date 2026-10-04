@@ -126,6 +126,31 @@ class ReceiptDTO(BaseModel):
     items: list[ItemDTO]
     members: list[MemberDTO]
     calculation: CalculationDTO | None
+    snapshot_id: UUID | None = None
+    cash_balances: dict[str, int] = Field(default_factory=dict)
+    remaining: dict[str, int] = Field(default_factory=dict)
+    payment_reports: list["PaymentReportDTO"] = Field(default_factory=list)
+    ledger: list["LedgerDTO"] = Field(default_factory=list)
+
+
+class PaymentReportDTO(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: UUID
+    member_id: UUID
+    snapshot_id: UUID
+    amount_minor: int
+    status: str
+
+
+class LedgerDTO(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: UUID
+    member_id: UUID
+    amount_minor: int
+    direction: int
+    kind: str
+    reason: str
+    correction_of: UUID | None
 
 
 class ReceiptPage(BaseModel):

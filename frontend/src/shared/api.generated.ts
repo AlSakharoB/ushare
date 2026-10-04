@@ -382,6 +382,108 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/receipts/{receipt_id}/start-settlement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start */
+        post: operations["start_api_v1_receipts__receipt_id__start_settlement_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receipts/{receipt_id}/payment-reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Report */
+        post: operations["report_api_v1_receipts__receipt_id__payment_reports_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receipts/{receipt_id}/payment-reports/{report_id}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Review */
+        post: operations["review_api_v1_receipts__receipt_id__payment_reports__report_id__review_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receipts/{receipt_id}/cash-ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cash */
+        post: operations["cash_api_v1_receipts__receipt_id__cash_ledger_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receipts/{receipt_id}/return-to-collecting": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Return To Collecting */
+        post: operations["return_to_collecting_api_v1_receipts__receipt_id__return_to_collecting_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receipts/{receipt_id}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Close */
+        post: operations["close_api_v1_receipts__receipt_id__close_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health/live": {
         parameters: {
             query?: never;
@@ -450,6 +552,29 @@ export interface components {
             own_cost_minor: number;
             /** Expected From Others Minor */
             expected_from_others_minor: number;
+        };
+        /** CashCommand */
+        CashCommand: {
+            /** Expected Version */
+            expected_version: number;
+            /**
+             * Member Id
+             * Format: uuid
+             */
+            member_id: string;
+            /** Amount Minor */
+            amount_minor: number;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "received" | "refund" | "correction";
+            /** Reason */
+            reason: string;
+            /** Correction Of */
+            correction_of?: string | null;
+            /** Direction */
+            direction?: (-1 | 1) | null;
         };
         /** Command */
         Command: {
@@ -600,6 +725,29 @@ export interface components {
              */
             receipt_id: string;
         };
+        /** LedgerDTO */
+        LedgerDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Member Id
+             * Format: uuid
+             */
+            member_id: string;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Direction */
+            direction: number;
+            /** Kind */
+            kind: string;
+            /** Reason */
+            reason: string;
+            /** Correction Of */
+            correction_of: string | null;
+        };
         /** LoginBody */
         LoginBody: {
             /** Init Data */
@@ -661,6 +809,28 @@ export interface components {
             printed_total_minor?: number | null;
             /** Printed Total Reason */
             printed_total_reason?: string | null;
+        };
+        /** PaymentReportDTO */
+        PaymentReportDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Member Id
+             * Format: uuid
+             */
+            member_id: string;
+            /**
+             * Snapshot Id
+             * Format: uuid
+             */
+            snapshot_id: string;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Status */
+            status: string;
         };
         /** PendingRequestDTO */
         PendingRequestDTO: {
@@ -727,6 +897,20 @@ export interface components {
             /** Members */
             members: components["schemas"]["MemberDTO"][];
             calculation: components["schemas"]["CalculationDTO"] | null;
+            /** Snapshot Id */
+            snapshot_id?: string | null;
+            /** Cash Balances */
+            cash_balances?: {
+                [key: string]: number;
+            };
+            /** Remaining */
+            remaining?: {
+                [key: string]: number;
+            };
+            /** Payment Reports */
+            payment_reports?: components["schemas"]["PaymentReportDTO"][];
+            /** Ledger */
+            ledger?: components["schemas"]["LedgerDTO"][];
         };
         /** ReceiptPage */
         ReceiptPage: {
@@ -741,6 +925,32 @@ export interface components {
             expected_version: number;
             /** Item Id */
             item_id?: string | null;
+        };
+        /** ReportCommand */
+        ReportCommand: {
+            /** Expected Version */
+            expected_version: number;
+            /** Amount Minor */
+            amount_minor: number;
+        };
+        /** ReturnCommand */
+        ReturnCommand: {
+            /** Expected Version */
+            expected_version: number;
+            /** Reason */
+            reason: string;
+        };
+        /** ReviewCommand */
+        ReviewCommand: {
+            /** Expected Version */
+            expected_version: number;
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "received" | "rejected" | "duplicate";
+            /** Amount Minor */
+            amount_minor?: number | null;
         };
         /** ReviewRequest */
         ReviewRequest: {
@@ -1609,6 +1819,229 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
+            path: {
+                receipt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Command"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_api_v1_receipts__receipt_id__start_settlement_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                receipt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Command"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    report_api_v1_receipts__receipt_id__payment_reports_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                receipt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    review_api_v1_receipts__receipt_id__payment_reports__report_id__review_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                receipt_id: string;
+                report_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cash_api_v1_receipts__receipt_id__cash_ledger_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                receipt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CashCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    return_to_collecting_api_v1_receipts__receipt_id__return_to_collecting_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                receipt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReturnCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceiptDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    close_api_v1_receipts__receipt_id__close_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 receipt_id: string;
             };
